@@ -5,17 +5,31 @@ using UnityEngine.AI;
 
 public class AIControl : MonoBehaviour {
 
-    public GameObject goal;
+    GameObject [] goalcations;
     NavMeshAgent agent;
+    Animator anim;
 
     void Start() {
 
         agent = GetComponent<NavMeshAgent>();
-        agent.SetDestination(goal.transform.position);
+        goalcations = GameObject.FindGameObjectsWithTag("Goal");
+        int i = Random.Range(0, goalcations.Length);
+        agent.SetDestination(goalcations[i].transform.position);
+        anim = GetComponent <Animator>();
+        anim.SetTrigger("isWalking");
+        anim.SetFloat("wOffset",Random.Range(0.0f, 1.0f));
+        float sm = Random.Range(0.5f, 2.0f);
+        anim.SetFloat("speedMult",sm);
+        agent.speed *= sm;
     }
 
 
-    void Update() {
-
+    void Update() 
+    {
+        if (agent.remainingDistance < 1)
+        {
+            int i = Random.Range(0,goalcations.Length);
+            agent.SetDestination(goalcations[i].transform.position);
+        }
     }
 }
